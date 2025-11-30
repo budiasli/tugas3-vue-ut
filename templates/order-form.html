@@ -1,0 +1,59 @@
+<!-- Template for OrderForm -->
+<script type="text/x-template" id="tpl-order-form">
+    <div class="card shadow p-4">
+        <h4 class="card-title text-primary">Formulir Pembuatan Delivery Order Baru</h4>
+        <form @submit.prevent="submitOrder">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="nim">NIM Mahasiswa <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="nim" v-model="form.nim" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="nama">Nama Mahasiswa <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="nama" v-model="form.nama" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="upbjj">UPBJJ</label>
+                    <input type="text" class="form-control" id="upbjj" v-model="form.upbjj" disabled>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="ekspedisi">Ekspedisi Pengiriman</label>
+                    <select class="form-control" id="ekspedisi" v-model="form.ekspedisiKode">
+                        <option v-for="e in pengirimanList" :value="e.kode">
+                            {{ e.nama }}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="paket">Pilih Paket Bahan Ajar <span class="text-danger">*</span></label>
+                    <select class="form-control" id="paket" v-model="form.paketKode" required>
+                        <option :value="null" disabled>-- Pilih Paket --</option>
+                        <option v-for="p in paketFull" :value="p.kode">
+                            {{ p.nama }} ({{ p.kode }})
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3" v-if="selectedPackageDetails">
+                <h6 class="alert-heading">Detail Paket: {{ selectedPackageDetails.nama }}</h6>
+                <p class="mb-1"><strong>Isi MK:</strong> {{ selectedPackageDetails.isi.join(', ') }}</p>
+                <p class="mb-0"><strong>Harga:</strong> Rp{{ selectedPackageDetails.harga.toLocaleString('id-ID') }}</p>
+            </div>
+            
+            <div class="form-group">
+                <label class="font-weight-bold">Total Harga:</label>
+                <div class="alert alert-success font-weight-bold lead">
+                    Rp{{ totalHarga.toLocaleString('id-ID') }}
+                </div>
+            </div>
+
+            <button type="submit" :disabled="isSubmitting || !isFormValid" class="btn btn-primary btn-lg btn-block">
+                {{ isSubmitting ? 'Memproses...' : 'Simpan DO Baru' }}
+            </button>
+        </form>
+    </div>
+</script>

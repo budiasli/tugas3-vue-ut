@@ -1,0 +1,58 @@
+<!-- Template for DoTracking -->
+<script type="text/x-template" id="tpl-do-tracking">
+    <div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control form-control-lg" v-model="inputQuery" placeholder="Masukkan Nomor DO (misal: DO2025-0001)">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" @click="performSearch" :disabled="isSearching || !inputQuery">
+                            <i class="fas fa-search" v-if="!isSearching"></i>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-else></span>
+                            Cari
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex align-items-center">
+                <div class="alert alert-secondary w-100 mb-0">
+                    <strong class="text-primary">DO Terlacak:</strong> {{ trackingData.length }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4" v-if="searchPerformed">
+            <div class="card-header bg-primary text-white" v-if="doDetails">
+                <h5 class="mb-0">Detail Delivery Order: {{ doDetails.no_do }}</h5>
+            </div>
+            <div class="card-body" v-if="doDetails">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>NIM/Nama:</strong> {{ doDetails.nim }} / {{ doDetails.nama }}</p>
+                        <p><strong>Paket:</strong> {{ doDetails.paket_nama }} ({{ doDetails.paket_kode }})</p>
+                        <p><strong>Ekspedisi:</strong> {{ getEkspedisiName(doDetails.ekspedisi) }}</p>
+                        <p><strong>Tanggal Kirim:</strong> {{ doDetails.tanggal_kirim }}</p>
+                        <p><strong>Total Harga:</strong> Rp{{ doDetails.total_harga.toLocaleString('id-ID') }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-primary">Status Terkini:</h6>
+                        <div class="alert" :class="doDetails.status.includes('Selesai') ? 'alert-success' : 'alert-warning'">
+                            <strong>{{ doDetails.status }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="mt-4 border-bottom pb-2">Riwayat Perjalanan:</h6>
+                <ul class="timeline">
+                    <li v-for="t in doDetails.tracking" :key="t.timestamp">
+                        <span class="timeline-date">{{ t.timestamp }}</span>
+                        <span class="timeline-desc">{{ t.description }}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body" v-else>
+                <div class="alert alert-danger">Nomor DO **{{ inputQuery }}** tidak ditemukan.</div>
+            </div>
+        </div>
+    </div>
+</script>
